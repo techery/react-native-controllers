@@ -243,12 +243,15 @@ var Controllers = {
     dismissLightBox: function() {
       RCCManager.modalDismissLightBox();
     },
-    showController: function(appKey, animationType = 'slide-up', passProps = {}) {
+    showController: function(appKey, orientation = 'portrait', animationType = 'slide-up', passProps = {}) {
       var controller = _controllerRegistry[appKey];
       if (controller === undefined) return;
       var layout = controller.render();
       _validateDrawerProps(layout);
-      RCCManager.showController(layout, animationType, passProps);
+      if (orientation !== 'portrait' && orientation !== 'landscape') {
+        throw new Error('Incorrect orientation provided: ' + orientation + '. Only portrait and landscape are supported');
+      }
+      RCCManager.showController(layout, orientation, animationType, passProps);
     },
     dismissController: function(animationType = 'slide-down') {
       RCCManager.dismissController(animationType);

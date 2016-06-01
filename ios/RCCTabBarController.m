@@ -4,6 +4,7 @@
 #import "RCCManager.h"
 
 @implementation RCCTabBarController
+@synthesize preferredInterfaceOrientation;
 
 - (UIImage *)image:(UIImage*)image withColor:(UIColor *)color1
 {
@@ -122,7 +123,7 @@
 
   // replace the tabs
   self.viewControllers = viewControllers;
-
+  self.preferredInterfaceOrientation = UIInterfaceOrientationLandscapeRight | UIInterfaceOrientationLandscapeLeft;
   return self;
 }
 

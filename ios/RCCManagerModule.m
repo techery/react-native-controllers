@@ -8,7 +8,7 @@
 #import "RCTConvert.h"
 #import "RCCTabBarController.h"
 #import "RCCTheSideBarManagerViewController.h"
-
+#import "Orientation.h"
 
 #define kSlideDownAnimationDuration 0.35
 
@@ -250,9 +250,18 @@ modalDismissLightBox)
 }
 
 RCT_EXPORT_METHOD(
-showController:(NSDictionary*)layout animationType:(NSString*)animationType globalProps:(NSDictionary*)globalProps resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+showController:(NSDictionary*)layout lockedOrientation:(NSString *)lockedOrientation animationType:(NSString*)animationType globalProps:(NSDictionary*)globalProps resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    UIViewController *controller = [RCCViewController controllerWithLayout:layout globalProps:globalProps bridge:[[RCCManager sharedInstance] getBridge]];
+    UIViewController <RCCRotatable> *controller = [RCCViewController controllerWithLayout:layout globalProps:globalProps bridge:[[RCCManager sharedInstance] getBridge]];
+
+    if ([lockedOrientation.lowercaseString isEqual:@"landscape"]) {
+        [Orientation setOrientation:UIInterfaceOrientationMaskLandscape];
+        controller.preferredInterfaceOrientation = UIInterfaceOrientationLandscapeLeft;
+    } else if ([lockedOrientation.lowercaseString isEqual:@"portrait"]) {
+        [Orientation setOrientation:UIInterfaceOrientationPortrait];
+        controller.preferredInterfaceOrientation = UIInterfaceOrientationPortrait;
+    }
+
     if (controller == nil)
     {
         [RCCManagerModule handleRCTPromiseRejectBlock:reject

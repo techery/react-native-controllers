@@ -94,6 +94,7 @@
 		D85082E01CBCF54200FDB961 /* TheSidebarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TheSidebarController.m; sourceTree = "<group>"; };
 		D8AFADBD1BEE6F3F00A4592D /* libReactNativeControllers.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libReactNativeControllers.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8E11C561CBD1F670018B644 /* RCCDrawerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCCDrawerController.m; sourceTree = "<group>"; };
+		DB514CDC1CFEDDF000CD65D0 /* RCCRotatable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCCRotatable.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -190,6 +191,7 @@
 				CC84A1941C1A0C4E00B3A6A2 /* RCCManager.m */,
 				CC84A1951C1A0C4E00B3A6A2 /* RCCManagerModule.h */,
 				CC84A1961C1A0C4E00B3A6A2 /* RCCManagerModule.m */,
+				DB514CDC1CFEDDF000CD65D0 /* RCCRotatable.h */,
 				CC84A1971C1A0C4E00B3A6A2 /* RCCNavigationController.h */,
 				CC84A1981C1A0C4E00B3A6A2 /* RCCNavigationController.m */,
 				CC84A1991C1A0C4E00B3A6A2 /* RCCTabBarController.h */,
@@ -334,6 +336,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../../react-native/React/**",
+					"$(SRCROOT)/../../react-native-orientation/RCTOrientation",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -375,6 +378,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../../react-native/React/**",
+					"$(SRCROOT)/../../react-native-orientation/RCTOrientation",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;

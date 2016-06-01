@@ -22,6 +22,8 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
 
 @implementation RCCViewController
 
+@synthesize preferredInterfaceOrientation;
+
 -(UIImageView *)navBarHairlineImageView {
     if (!_navBarHairlineImageView) {
         _navBarHairlineImageView = [self findHairlineImageViewUnder:self.navigationController.navigationBar];
@@ -31,8 +33,8 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
 
 + (UIViewController*)controllerWithLayout:(NSDictionary *)layout globalProps:(NSDictionary *)globalProps bridge:(RCTBridge *)bridge
 {
-    UIViewController* controller = nil;
-    if (!layout) return nil;
+  UIViewController <RCCRotatable> *controller = nil;
+  if (!layout) return nil;
     
     // get props
     if (!layout[@"props"]) return nil;
@@ -86,7 +88,9 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
     {
         [[RCCManager sharedInstance] registerController:controller componentId:componentId componentType:type];
     }
-    
+
+    controller.preferredInterfaceOrientation = UIInterfaceOrientationLandscapeRight | UIInterfaceOrientationLandscapeLeft;
+
     return controller;
 }
 

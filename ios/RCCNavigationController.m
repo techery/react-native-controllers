@@ -5,6 +5,8 @@
 #import "RCTConvert.h"
 
 @implementation RCCNavigationController
+@synthesize preferredInterfaceOrientation;
+
 
 NSString const *CALLBACK_ASSOCIATED_KEY = @"RCCNavigationController.CALLBACK_ASSOCIATED_KEY";
 NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSOCIATED_ID";
@@ -41,7 +43,7 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
   if (!self) return nil;
   
   self.navigationBar.translucent = NO; // default
-  
+  self.preferredInterfaceOrientation = UIInterfaceOrientationLandscapeLeft;
   return self;
 }
 
