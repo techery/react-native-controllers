@@ -113,41 +113,25 @@ RCT_EXPORT_MODULE(RCCManager);
 {
     if (allPresentedViewControllers.count > 0)
     {
-        __block NSUInteger counter = 0;
-        for (UIViewController *viewController in allPresentedViewControllers)
-        {
-            counter++;
-            
+        for (UIViewController *viewController in allPresentedViewControllers) {
             [[RCCManager sharedIntance] unregisterController:viewController];
-            if (viewController.presentedViewController != nil)
-            {
-                [viewController dismissViewControllerAnimated:NO completion:^()
-                 {
-                     if (counter == allPresentedViewControllers.count && allPresentedViewControllers.count > 0)
-                     {
-                         [allPresentedViewControllers removeAllObjects];
-                         
-                         if (resolve != nil)
-                         {
-                             resolve(nil);
-                         }
-                     }
-                 }];
+            if (viewController.presentedViewController != nil) {
+                [viewController.presentedViewController dismissViewControllerAnimated:NO completion:nil];
+                [viewController dismissViewControllerAnimated:NO completion:nil];
             }
-            else if (counter == allPresentedViewControllers.count && allPresentedViewControllers.count > 0)
-            {
-                [allPresentedViewControllers removeAllObjects];
-                
-                if (resolve != nil)
-                {
-                    resolve(nil);
-                }
+            else {
+                [viewController dismissViewControllerAnimated:NO completion:nil];
             }
+        }
+        if (resolve != nil) {
+            resolve(nil);
+            return;
         }
     }
     else if (resolve != nil)
     {
         resolve(nil);
+        return;
     }
 }
 
@@ -250,9 +234,10 @@ modalDismissLightBox)
 }
 
 RCT_EXPORT_METHOD(
-showController:(NSDictionary*)layout animationType:(NSString*)animationType globalProps:(NSDictionary*)globalProps resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+showController:(NSDictionary*)layout orientation:(NSString*) orientation animationType:(NSString*)animationType globalProps:(NSDictionary*)globalProps resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    UIViewController *controller = [RCCViewController controllerWithLayout:layout globalProps:globalProps bridge:[[RCCManager sharedInstance] getBridge]];
+    UIViewController <RCCRotatable> *controller = [RCCViewController controllerWithLayout:layout globalProps:globalProps bridge:[[RCCManager sharedInstance] getBridge]];
+   
     if (controller == nil)
     {
         [RCCManagerModule handleRCTPromiseRejectBlock:reject
@@ -260,6 +245,34 @@ showController:(NSDictionary*)layout animationType:(NSString*)animationType glob
         return;
     }
 
+    if ([orientation isEqualToString:@"portrait"]) {
+        UIViewController <RCCRotatable> *rootViewController = controller;
+        if ([controller isKindOfClass:[UINavigationController class]]) {
+            rootViewController = ((UINavigationController *)controller).viewControllers.firstObject;
+        }
+        if ([rootViewController conformsToProtocol:@protocol(RCCRotatable)]) {
+            rootViewController.rcc_shouldAutorotate = NO;
+            rootViewController.rcc_supportedInterfaceOrientations = UIInterfaceOrientationMaskPortrait;
+            rootViewController.rcc_preferedInterfaceOrientation = UIInterfaceOrientationPortrait;
+        }
+        else {
+            NSLog(@"Instance of %@ is not implements RCCRotatable protocol", rootViewController);
+        }
+    } else if ([orientation isEqualToString:@"landscape"]) {
+        UIViewController <RCCRotatable> *rootViewController = controller;
+        if ([controller isKindOfClass:[UINavigationController class]]) {
+            rootViewController = ((UINavigationController *)controller).viewControllers.firstObject;
+        }
+        if ([rootViewController conformsToProtocol:@protocol(RCCRotatable)]) {
+            rootViewController.rcc_shouldAutorotate = YES;
+            rootViewController.rcc_supportedInterfaceOrientations = UIInterfaceOrientationMaskLandscape;
+            rootViewController.rcc_preferedInterfaceOrientation = UIInterfaceOrientationLandscapeRight;
+        }
+        else {
+            NSLog(@"Instance of %@ is not implements RCCRotatable protocol", rootViewController);
+        }
+
+    }
     [[RCCManagerModule lastModalPresenterViewController] presentViewController:controller
                                                            animated:![animationType isEqualToString:@"none"]
                                                          completion:^(){ resolve(nil); }];
@@ -276,26 +289,51 @@ dismissController:(NSString*)animationType resolver:(RCTPromiseResolveBlock)reso
 }
 
 RCT_EXPORT_METHOD(
+dismissMeasurementFlow:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    NSMutableArray *allPresentedViewControllers = [NSMutableArray array];
+    [RCCManagerModule modalPresenterViewControllers:allPresentedViewControllers];
+
+    if ([allPresentedViewControllers.firstObject isKindOfClass:[RCCTabBarController copy]]) {
+        [allPresentedViewControllers.firstObject dismissViewControllerAnimated:YES completion:^{
+            if (resolve) {
+                resolve(nil);
+            }
+            return;
+        }];
+ 
+    }
+    else if (resolve) {
+        resolve(nil);
+    }
+    
+}
+
+RCT_EXPORT_METHOD(
 dismissAllControllers:(NSString*)animationType resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
     NSMutableArray *allPresentedViewControllers = [NSMutableArray array];
     [RCCManagerModule modalPresenterViewControllers:allPresentedViewControllers];
-    
+    NSPredicate *filterNavigationControllersPredicate = [NSPredicate predicateWithBlock:^BOOL(id  _Nonnull evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
+        return ![evaluatedObject isKindOfClass:[RCCTabBarController class]];
+    }];
+    NSMutableArray *filteredControllers = [allPresentedViewControllers filteredArrayUsingPredicate:filterNavigationControllersPredicate].mutableCopy;
     BOOL animated = ![animationType isEqualToString:@"none"];
+    
     if (animated)
     {
         id<UIApplicationDelegate> appDelegate = [UIApplication sharedApplication].delegate;
         UIView *snapshot = [appDelegate.window snapshotViewAfterScreenUpdates:NO];
         [appDelegate.window addSubview:snapshot];
         
-        [self dismissAllModalPresenters:allPresentedViewControllers resolver:^(id result)
+        [self dismissAllModalPresenters:filteredControllers resolver:^(id result)
         {
             [self animateSnapshot:snapshot animationType:animationType resolver:resolve];
         }];
     }
     else
     {
-        [self dismissAllModalPresenters:allPresentedViewControllers resolver:resolve];
+        [self dismissAllModalPresenters:filteredControllers resolver:resolve];
     }
 }
 

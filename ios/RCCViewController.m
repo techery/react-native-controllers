@@ -22,6 +22,10 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
 
 @implementation RCCViewController
 
+@synthesize rcc_shouldAutorotate;
+@synthesize rcc_preferedInterfaceOrientation;
+@synthesize rcc_supportedInterfaceOrientations;
+
 -(UIImageView *)navBarHairlineImageView {
     if (!_navBarHairlineImageView) {
         _navBarHairlineImageView = [self findHairlineImageViewUnder:self.navigationController.navigationBar];
@@ -136,7 +140,11 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
     self.automaticallyAdjustsScrollViewInsets = NO; // default
     
     self.navigatorStyle = [NSMutableDictionary dictionaryWithDictionary:navigatorStyle];
-    
+  
+    self.rcc_shouldAutorotate = NO;
+    self.rcc_supportedInterfaceOrientations = UIInterfaceOrientationMaskPortrait;
+    self.rcc_preferedInterfaceOrientation = UIInterfaceOrientationPortrait;
+  
     [self setStyleOnInit];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onRNReload) name:RCTReloadNotification object:nil];
@@ -457,6 +465,18 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
         }
     }
     return nil;
+}
+
+- (BOOL)shouldAutorotate {
+  return self.rcc_shouldAutorotate;
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+  return self.rcc_supportedInterfaceOrientations;
+}
+
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
+  return self.rcc_preferedInterfaceOrientation;
 }
 
 @end
