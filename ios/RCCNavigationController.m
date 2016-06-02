@@ -292,4 +292,21 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
   }
 }
 
+- (UIViewController *)rcc_topViewController {
+  UIViewController *topViewController = self.topViewController;
+  return topViewController;
+}
+
+- (BOOL)shouldAutorotate {
+  return [self rcc_topViewController].shouldAutorotate;
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+  return [self rcc_topViewController].supportedInterfaceOrientations;
+}
+
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
+  return [self rcc_topViewController].preferredInterfaceOrientationForPresentation;
+}
+
 @end

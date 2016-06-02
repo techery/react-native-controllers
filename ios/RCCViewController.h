@@ -1,7 +1,8 @@
 #import <UIKit/UIKit.h>
 #import "RCTBridge.h"
+#import "RCCRotatable.h"
 
-@interface RCCViewController : UIViewController
+@interface RCCViewController : UIViewController <RCCRotatable>
 
 @property (nonatomic) NSMutableDictionary *navigatorStyle;
 @property (nonatomic) BOOL navBarHidden;
