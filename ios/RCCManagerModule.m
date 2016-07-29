@@ -294,19 +294,14 @@ dismissMeasurementFlow:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejec
     NSMutableArray *allPresentedViewControllers = [NSMutableArray array];
     [RCCManagerModule modalPresenterViewControllers:allPresentedViewControllers];
 
-    if ([allPresentedViewControllers.firstObject isKindOfClass:[RCCTabBarController copy]]) {
-        [allPresentedViewControllers.firstObject dismissViewControllerAnimated:YES completion:^{
-            if (resolve) {
-                resolve(nil);
-            }
-            return;
-        }];
- 
+    UIViewController *toBeDismissedVC = allPresentedViewControllers.firstObject;
+    if ([toBeDismissedVC isKindOfClass:[RCCTabBarController class]]) {
+        [self unregisterControllers:allPresentedViewControllers];
+        [self dismissVC:toBeDismissedVC withResolve:resolve];
     }
     else if (resolve) {
         resolve(nil);
     }
-    
 }
 
 RCT_EXPORT_METHOD(
@@ -335,6 +330,25 @@ dismissAllControllers:(NSString*)animationType resolver:(RCTPromiseResolveBlock)
     {
         [self dismissAllModalPresenters:filteredControllers resolver:resolve];
     }
+}
+
+#pragma mark - Dismiss helpers
+
+- (void)unregisterControllers:(NSArray *)controllers {
+    for(UIViewController *viewController in controllers) {
+        if(![viewController isKindOfClass:[RCCTabBarController class]]) {
+            [[RCCManager sharedIntance] unregisterController:viewController];
+        }
+    }
+}
+
+- (void)dismissVC:(UIViewController *)controller
+      withResolve:(RCTPromiseResolveBlock)resolve {
+    [controller dismissViewControllerAnimated:YES completion:^{
+        if (resolve) {
+            resolve(nil);
+        }
+    }];
 }
 
 @end
