@@ -1,6 +1,7 @@
 #import "RCCManager.h"
 #import "RCTBridge.h"
 #import "RCTRedBox.h"
+#import "RCCViewController.h"
 #import <Foundation/Foundation.h>
 
 @interface RCCManager() <RCTBridgeDelegate>
@@ -185,7 +186,9 @@
   
   if (splashView != nil)
   {
-    UIViewController *splashVC = [[UIViewController alloc] init];
+    RCCViewController *splashVC = [[RCCViewController alloc] init];
+    splashVC.rcc_supportedInterfaceOrientations = UIInterfaceOrientationMaskPortrait;
+    splashVC.rcc_preferedInterfaceOrientation = UIInterfaceOrientationPortrait;
     splashVC.view = splashView;
     
     id<UIApplicationDelegate> appDelegate = [UIApplication sharedApplication].delegate;
