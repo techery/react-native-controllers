@@ -243,12 +243,12 @@ var Controllers = {
     dismissLightBox: function() {
       RCCManager.modalDismissLightBox();
     },
-    showController: function(appKey, orientation = 'portrait', animationType = 'slide-up', passProps = {}) {
+    showController: function(appKey, orientation = 'portrait', animationType = 'slide-up', enableNotifications = true, passProps = {}) {
       var controller = _controllerRegistry[appKey];
       if (controller === undefined) return;
       var layout = controller.render();
       _validateDrawerProps(layout);
-      RCCManager.showController(layout, orientation, animationType, passProps);
+      RCCManager.showController(layout, orientation, animationType, enableNotifications, passProps);
     },
     dismissController: function(animationType = 'slide-down') {
       RCCManager.dismissController(animationType);
