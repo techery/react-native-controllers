@@ -81,7 +81,11 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
     }
     
     RCCViewController *viewController = [[RCCViewController alloc] initWithComponent:component passProps:passProps navigatorStyle:navigatorStyle globalProps:nil bridge:bridge];
-    
+    NSNumber *enableNotifications = actionParams[@"enableNotifications"];
+    if (enableNotifications) {
+        viewController.rcc_canShowNotifications = enableNotifications.boolValue;
+    }
+
     NSString *title = actionParams[@"title"];
     if (title) viewController.title = title;
     

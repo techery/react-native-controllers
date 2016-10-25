@@ -8,6 +8,7 @@
 #import "RCTConvert.h"
 #import "RCCTabBarController.h"
 #import "RCCTheSideBarManagerViewController.h"
+#import "RCCNotificationsPresenter.h"
 
 
 #define kSlideDownAnimationDuration 0.35
@@ -234,10 +235,12 @@ modalDismissLightBox)
 }
 
 RCT_EXPORT_METHOD(
-showController:(NSDictionary*)layout orientation:(NSString*) orientation animationType:(NSString*)animationType globalProps:(NSDictionary*)globalProps resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+showController:(NSDictionary*)layout orientation:(NSString*) orientation animationType:(NSString*)animationType enableNotifications:(BOOL)enableNotifications globalProps:(NSDictionary*)globalProps resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    UIViewController <RCCRotatable> *controller = [RCCViewController controllerWithLayout:layout globalProps:globalProps bridge:[[RCCManager sharedInstance] getBridge]];
-   
+    UIViewController <RCCRotatable, RCCNotificationsPresenter> *controller = [RCCViewController controllerWithLayout:layout globalProps:globalProps bridge:[[RCCManager sharedInstance] getBridge]];
+
+    [self enableNotifications:enableNotifications forController:controller];
+
     if (controller == nil)
     {
         [RCCManagerModule handleRCTPromiseRejectBlock:reject
@@ -276,6 +279,15 @@ showController:(NSDictionary*)layout orientation:(NSString*) orientation animati
     [[RCCManagerModule lastModalPresenterViewController] presentViewController:controller
                                                            animated:![animationType isEqualToString:@"none"]
                                                          completion:^(){ resolve(nil); }];
+}
+
+- (void)enableNotifications:(BOOL)enableNotifications forController:(UIViewController <RCCNotificationsPresenter> *)controller {
+    if ([controller isKindOfClass:[UINavigationController class]]) {
+        controller = ((UINavigationController *)controller).viewControllers.firstObject;
+    }
+    if ([controller conformsToProtocol:@protocol(RCCNotificationsPresenter)]) {
+        controller.rcc_canShowNotifications = enableNotifications;
+    }
 }
 
 RCT_EXPORT_METHOD(

@@ -26,6 +26,8 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
 @synthesize rcc_preferedInterfaceOrientation;
 @synthesize rcc_supportedInterfaceOrientations;
 
+@synthesize rcc_canShowNotifications = _rcc_canShowNotifications;
+
 -(UIImageView *)navBarHairlineImageView {
     if (!_navBarHairlineImageView) {
         _navBarHairlineImageView = [self findHairlineImageViewUnder:self.navigationController.navigationBar];
@@ -98,7 +100,7 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
 {
     NSString *component = props[@"component"];
     if (!component) return nil;
-    
+
     NSDictionary *passProps = props[@"passProps"];
     NSDictionary *navigatorStyle = props[@"style"];
     
@@ -110,7 +112,7 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
     
     self = [super init];
     if (!self) return nil;
-    
+
     [self commonInit:reactView navigatorStyle:navigatorStyle];
     
     return self;
@@ -135,7 +137,9 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
 - (void)commonInit:(RCTRootView*)reactView navigatorStyle:(NSDictionary*)navigatorStyle
 {
     self.view = reactView;
-    
+
+    self.rcc_canShowNotifications = YES;
+
     self.edgesForExtendedLayout = UIRectEdgeNone; // default
     self.automaticallyAdjustsScrollViewInsets = NO; // default
     
