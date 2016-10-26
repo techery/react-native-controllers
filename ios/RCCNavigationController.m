@@ -303,8 +303,10 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
 
 - (UIViewController *)targetViewController {
   UIViewController *topViewController = self.viewControllers.firstObject;
-  if (self.presentedViewController) {
-    return self.presentedViewController;
+  UIViewController *const presentedController = self.presentedViewController;
+  BOOL isAlertView = [presentedController isKindOfClass:[UIAlertController class]];
+  if (presentedController && !presentedController.isBeingDismissed && !isAlertView) {
+    return presentedController;
   }
   return topViewController;
 }

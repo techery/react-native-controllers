@@ -189,6 +189,7 @@
     RCCViewController *splashVC = [[RCCViewController alloc] init];
     splashVC.rcc_supportedInterfaceOrientations = UIInterfaceOrientationMaskPortrait;
     splashVC.rcc_preferedInterfaceOrientation = UIInterfaceOrientationPortrait;
+    splashVC.rcc_shouldAutorotate = NO;
     splashVC.view = splashView;
     
     id<UIApplicationDelegate> appDelegate = [UIApplication sharedApplication].delegate;
