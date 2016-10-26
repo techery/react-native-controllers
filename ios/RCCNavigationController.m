@@ -7,6 +7,10 @@
 
 @implementation RCCNavigationController
 
+@synthesize rcc_shouldAutorotate;
+@synthesize rcc_preferedInterfaceOrientation;
+@synthesize rcc_supportedInterfaceOrientations;
+
 NSString const *CALLBACK_ASSOCIATED_KEY = @"RCCNavigationController.CALLBACK_ASSOCIATED_KEY";
 NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSOCIATED_ID";
 
@@ -297,21 +301,36 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
   }
 }
 
-- (UIViewController *)rcc_topViewController {
-  UIViewController *topViewController = self.topViewController;
+- (UIViewController *)targetViewController {
+  UIViewController *topViewController = self.viewControllers.firstObject;
+  if (self.presentedViewController) {
+    return self.presentedViewController;
+  }
   return topViewController;
 }
 
+- (BOOL)rcc_shouldAutorotate {
+  return [self targetViewController].shouldAutorotate;
+}
+
+- (UIInterfaceOrientationMask)rcc_supportedInterfaceOrientations {
+  return [self targetViewController].supportedInterfaceOrientations;
+}
+
+- (UIInterfaceOrientation)rcc_preferredInterfaceOrientation {
+  return [self targetViewController].preferredInterfaceOrientationForPresentation;
+}
+
 - (BOOL)shouldAutorotate {
-  return [self rcc_topViewController].shouldAutorotate;
+  return [self rcc_shouldAutorotate];
 }
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations {
-  return [self rcc_topViewController].supportedInterfaceOrientations;
+  return [self rcc_supportedInterfaceOrientations];
 }
 
-- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
-  return [self rcc_topViewController].preferredInterfaceOrientationForPresentation;
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation{
+  return [self rcc_preferredInterfaceOrientation];
 }
 
 @end
