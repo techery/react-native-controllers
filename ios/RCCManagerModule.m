@@ -168,6 +168,8 @@ setRootController:(NSDictionary*)layout animationType:(NSString*)animationType g
     // dismiss the modal controllers without animation just so they can be released
     [self dismissAllControllers:@"none" resolver:^(id result)
     {
+        // Fixes wrong root VC orientation on iPhone 6 Plus in landscape
+        [[UIApplication sharedApplication] setStatusBarOrientation:UIInterfaceOrientationPortrait];
         // set the new controller as the root
         appDelegate.window.rootViewController = controller;
         [appDelegate.window makeKeyAndVisible];
